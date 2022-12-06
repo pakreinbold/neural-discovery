@@ -1,0 +1,70 @@
+\documentclass{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+
+\title{Neural Discovery}
+\date{}
+\author{Patrick AK Reinbold}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+
+We want to discover models for dynamical systems, and we can use neural networks to do so. The inputs shall be (snippets of) trajectories and the outputs shall be the model parameters. In other words, we modify the multi-label classification problem to suit a model discovery framework. For instance, say that our dynamical system can be described by 2 variables $x$ and $y$, and their evolution is governed by
+\begin{align}
+    \dot{x} & = \sum_n a_n f_n(x, y), \nonumber\\
+    \dot{y} & = \sum_n b_n f_n(x, y),
+\end{align}
+where $f_n$ can be of arbitrary complexity, and even have its own parameterization.
+
+Let us pose the learning problem as training a model 
+\begin{equation}
+    \mathcal{M}: \{x, y\}_t \to \{a, b\}_n,
+\end{equation}
+where $\{x,y\}_t$ denotes observations of some trajectory, and $\{a,b\}_n$ denotes the parameters of the governing equation. The specifics of the discretization of the trajectory and the parameters will be discussed in subsequent sections.
+
+\section{Fitting Parameters with Fixed ODE Trajectory}
+
+To start, let us only consider learning parameters that we know are present, and train on trajectories that are always observed at the same points in time.
+
+\subsection{Systems}
+
+For example, consider the damped physical pendulum, whose torque balance equation can be written as
+\begin{equation}
+    \ddot{\theta} + \frac{b}{m}\dot{\theta} - \frac{g}{r}\sin\theta = 0.
+\end{equation}
+Reframing this as a first order equation:
+\begin{align}
+    \dot{\theta} &= \omega \\
+    \dot{\omega} &= c_1 \omega + c_2 \sin\theta
+\end{align}
+where $c_1=-b/m$ and $c_2=g/r$. Let us try and learn $c_1$ and $c_2$ using observations of $\omega$ and $\theta$. Each training sample $z_i$ will then be a stacking of observations:
+\begin{equation}
+    z_i = \begin{bmatrix}
+        \theta_i(t_1) \\ \theta_i(t_2) \\ \vdots \\ \theta_i(T) \\
+        \omega_i(t_1) \\ \omega_i(t_2) \\ \vdots \\ \omega_i(T)
+    \end{bmatrix},
+\end{equation}
+where $i$ denotes a particular simulation with parameters $\vec{c}_i$. Then all we must do is train our neural net
+\begin{equation}
+    \mathcal{M}: \{z\}_i \to \{\vec{c}\}_i
+\end{equation}
+
+\subsection{Neural Net Parameter Scaling}
+\begin{itemize}
+    \item Layers
+    \item Activation Function
+    \item Neurons
+    \item Amount of Training Data
+\end{itemize}
+
+\subsection{Trajectory Observation Scaling}
+
+\section{Fitting A Generic Library for Fixed ODE Trajectory}
+
+\section{Fitting Parameters with Flexible ODE Trajectory}
+
+
+\end{document}
